@@ -11,7 +11,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.XmlRootElement;
-import no.imr.nmdapi.common.jaxb.exceptions.ConversionException;
+import no.imr.nmdapi.exceptions.ConversionException;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
