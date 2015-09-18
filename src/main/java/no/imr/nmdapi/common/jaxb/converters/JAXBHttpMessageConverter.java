@@ -7,6 +7,9 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.XmlRootElement;
 import no.imr.nmdapi.common.jaxb.exceptions.ConversionException;
 import org.reflections.Reflections;
@@ -91,7 +94,14 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
     protected Object readInternal(Class<? extends Object> clazz, HttpInputMessage inputMessage) throws IOException {
         LOGGER.info("Unmarshall start");
         try {
-            return jaxbContext.createUnmarshaller().unmarshal(inputMessage.getBody());
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            unmarshaller.setEventHandler(new ValidationEventHandler() {
+
+                public boolean handleEvent(ValidationEvent event) {
+                    return false;
+                };
+            });
+            return unmarshaller.unmarshal(inputMessage.getBody());
         } catch (JAXBException e) {
             throw new ConversionException("Could not complete unmarshalling", e);
         }
