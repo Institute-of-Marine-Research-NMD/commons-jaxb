@@ -50,12 +50,20 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
     private final NamespacePrefixMapper nsMapper;
 
     /**
-     * Initalizes the convertes.
+     * Telles the system if it should check for supportedclasses.
+     * Reccomended is false.
+     */
+    private final boolean overrideSupport;
+
+    /**
+     * Initalizes the convertes. Only XMLRoot elements in specified packages are supported.
      *
      * @param nsMapper
+     * @param overrideSupport
      * @param packages All packages that contains supported jaxb classes.
+     * @throws javax.xml.bind.JAXBException
      */
-    public JAXBHttpMessageConverter(NamespacePrefixMapper nsMapper, String... packages) throws JAXBException {
+    public JAXBHttpMessageConverter(NamespacePrefixMapper nsMapper, boolean overrideSupport, String... packages) throws JAXBException {
         super(MediaType.APPLICATION_XML);
         LOGGER.info("Initalize");
         for (String pack : packages) {
@@ -65,13 +73,18 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
             }
         }
         this.nsMapper = nsMapper;
+        this.overrideSupport = overrideSupport;
         jaxbContext = JAXBContext.newInstance(supportedClasses.toArray(new Class[supportedClasses.size()]));
         LOGGER.info("Initalization complete");
     }
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return supportedClasses.contains(clazz);
+        if (!overrideSupport) {
+            return supportedClasses.contains(clazz);
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -90,6 +103,7 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
         try {
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", nsMapper);
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
             marshaller.marshal(o, outputMessage.getBody());
         } catch (JAXBException e) {
             throw new ConversionException("Could not complete marshalling", e);
@@ -104,7 +118,7 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
 
     @Override
     public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-        return canWrite(mediaType) && supports(clazz);
+        return canWrite(mediaType) && supportedClasses.contains(clazz);
     }
 
 }
