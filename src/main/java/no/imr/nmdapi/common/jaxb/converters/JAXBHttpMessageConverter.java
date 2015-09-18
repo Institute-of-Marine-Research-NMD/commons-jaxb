@@ -104,7 +104,7 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
             return unmarshaller.unmarshal(inputMessage.getBody());
         } catch (JAXBException e) {
             LOGGER.error("Could not complete unmarshalling", e);
-            throw new ConversionException("Could not complete unmarshalling", e);
+            throw new ConversionException("Could not complete unmarshalling: ".concat(e.getMessage()), e);
         }
     }
 
@@ -118,7 +118,7 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
             marshaller.marshal(o, outputMessage.getBody());
         } catch (JAXBException e) {
             LOGGER.error("Could not complete marshalling", e);
-            throw new ConversionException("Could not complete marshalling", e);
+            throw new ConversionException("Could not complete marshalling".concat(e.getMessage()), e);
         }
         LOGGER.info("Marshall complete");
     }
