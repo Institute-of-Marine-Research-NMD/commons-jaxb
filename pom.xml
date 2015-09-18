@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>no.imr.nmd.commons.jaxb</groupId>
     <artifactId>commons-jaxb</artifactId>
-    <version>0.0.6-SNAPSHOT</version>
+    <version>0.0.6</version>
     <packaging>jar</packaging>
     <name>Commons - JaxB</name>
     <distributionManagement>
@@ -12,11 +12,23 @@
             <url>https://build.imr.no/nexus/content/repositories/releases</url>
         </repository>
     </distributionManagement>
+<repositories>
+        <repository>
+            <id>nexus-release</id>
+            <name>Nexus release repository for IMR</name>
+            <url>http://javadev.imr.no:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>repository.springsource.milestone</id>
+            <name>SpringSource Milestone Repository</name>
+            <url>http://repo.springsource.org/milestone</url>
+        </repository>
+    </repositories>
     <scm>
         <connection>scm:git:git@github.com:Institute-of-Marine-Research-NMD/commons-jaxb.git</connection>
         <url>scm:git:git@github.com:Institute-of-Marine-Research-NMD/commons-jaxb.git</url>
         <developerConnection>scm:git:git@github.com:Institute-of-Marine-Research-NMD/commons-jaxb.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>commons-jaxb-0.0.6</tag>
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
