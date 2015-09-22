@@ -1,9 +1,12 @@
 package no.imr.nmdapi.common.jaxb.converters;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -11,7 +14,10 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import no.imr.nmdapi.exceptions.ConversionException;
+import no.imr.nmdapi.exceptions.S2DException;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +25,7 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
+import org.xml.sax.SAXException;
 /**
  *
  * @author kjetilf
@@ -59,6 +66,36 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
     private final boolean overrideSupport;
 
     /**
+     *
+     */
+    private Schema schema = null;
+
+    /**
+     * Initalizes the convertes. Only XMLRoot elements in specified packages are supported.
+     *
+     * @param nsMapper
+     * @param overrideSupport
+     * @param packages All packages that contains supported jaxb classes.
+     * @throws javax.xml.bind.JAXBException
+     */
+    public JAXBHttpMessageConverter(NamespacePrefixMapper nsMapper, boolean overrideSupport, File schemaFile, String... packages) throws JAXBException {
+        super(MediaType.APPLICATION_XML);
+        LOGGER.info("Initalize");
+        for (String pack : packages) {
+            for (Class<?> clazz : new Reflections(pack).getTypesAnnotatedWith(XmlRootElement.class)) {
+                LOGGER.info("JAXB message converter initalize class: " + clazz.getName());
+                supportedClasses.add(clazz);
+            }
+        }
+        this.schema = getSchema(schemaFile);
+        this.nsMapper = nsMapper;
+        this.overrideSupport = overrideSupport;
+        jaxbContext = JAXBContext.newInstance(supportedClasses.toArray(new Class[supportedClasses.size()]));
+        LOGGER.info("Initalization complete");
+    }
+
+
+    /**
      * Initalizes the convertes. Only XMLRoot elements in specified packages are supported.
      *
      * @param nsMapper
@@ -95,6 +132,9 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
         LOGGER.info("Unmarshall start");
         try {
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            if (this.schema != null) {
+                unmarshaller.setSchema(schema);
+            }
             unmarshaller.setEventHandler(new ValidationEventHandler() {
 
                 public boolean handleEvent(ValidationEvent event) {
@@ -131,6 +171,16 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
     @Override
     public boolean canWrite(Class<?> clazz, MediaType mediaType) {
         return canWrite(mediaType) && supportedClasses.contains(clazz);
+    }
+
+    private Schema getSchema(File schemaFile) {
+        try {
+            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            return schemaFactory.newSchema(schemaFile);
+        } catch (SAXException ex) {
+            LOGGER.error("Error importing schema definition.", ex);
+            throw new S2DException("Error importing schema definition.", ex);
+        }
     }
 
 }
