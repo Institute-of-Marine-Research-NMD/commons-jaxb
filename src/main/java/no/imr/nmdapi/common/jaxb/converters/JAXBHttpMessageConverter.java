@@ -3,6 +3,7 @@ package no.imr.nmdapi.common.jaxb.converters;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -75,10 +76,11 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
      *
      * @param nsMapper
      * @param overrideSupport
+     * @param schemaFile
      * @param packages All packages that contains supported jaxb classes.
      * @throws javax.xml.bind.JAXBException
      */
-    public JAXBHttpMessageConverter(NamespacePrefixMapper nsMapper, boolean overrideSupport, File schemaFile, String... packages) throws JAXBException {
+    public JAXBHttpMessageConverter(NamespacePrefixMapper nsMapper, boolean overrideSupport, URL schemaFile, String... packages) throws JAXBException {
         super(MediaType.APPLICATION_XML);
         LOGGER.info("Initalize");
         for (String pack : packages) {
@@ -173,7 +175,7 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
         return canWrite(mediaType) && supportedClasses.contains(clazz);
     }
 
-    private Schema getSchema(File schemaFile) {
+    private Schema getSchema(URL schemaFile) {
         try {
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             return schemaFactory.newSchema(schemaFile);
