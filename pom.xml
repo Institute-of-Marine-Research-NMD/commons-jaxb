@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>no.imr.nmd.commons.jaxb</groupId>
     <artifactId>commons-jaxb</artifactId>
-    <version>0.0.9-SNAPSHOT</version>
+    <version>0.0.9</version>
     <packaging>jar</packaging>
     <name>Commons - JaxB</name>
     <distributionManagement>
@@ -28,7 +28,7 @@
         <connection>scm:git:git@github.com:Institute-of-Marine-Research-NMD/commons-jaxb.git</connection>
         <url>scm:git:git@github.com:Institute-of-Marine-Research-NMD/commons-jaxb.git</url>
         <developerConnection>scm:git:git@github.com:Institute-of-Marine-Research-NMD/commons-jaxb.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>commons-jaxb-0.0.9</tag>
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
