@@ -1,12 +1,10 @@
 package no.imr.nmdapi.common.jaxb.converters;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -145,8 +143,12 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
             });
             return unmarshaller.unmarshal(inputMessage.getBody());
         } catch (JAXBException e) {
+            String message = e.getMessage();
+            if (message == null) {
+                message = e.getCause().getMessage();
+            }
             LOGGER.error("Could not complete unmarshalling", e);
-            throw new ConversionException("Could not complete unmarshalling: ".concat(e.getMessage()), e);
+            throw new ConversionException("Could not complete unmarshalling: ".concat(message != null ? message : ""), e);
         }
     }
 
