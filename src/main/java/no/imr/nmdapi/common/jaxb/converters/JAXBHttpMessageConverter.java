@@ -3,6 +3,8 @@ package no.imr.nmdapi.common.jaxb.converters;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.XMLConstants;
@@ -158,7 +160,7 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
         try {
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", nsMapper);
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, ENCODING);
             marshaller.marshal(o, outputMessage.getBody());
         } catch (JAXBException e) {
             LOGGER.error("Could not complete marshalling", e);

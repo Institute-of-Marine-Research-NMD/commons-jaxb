@@ -32,7 +32,7 @@
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jaxb.version>2.1.17</jaxb.version>
+        <jaxb.version>2.2.11</jaxb.version>
         <additionalparam>-Xdoclint:none</additionalparam>
     </properties>
     <build>
@@ -86,7 +86,7 @@
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>2.1.17</version>
+            <version>${jaxb.version}</version>
         </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
