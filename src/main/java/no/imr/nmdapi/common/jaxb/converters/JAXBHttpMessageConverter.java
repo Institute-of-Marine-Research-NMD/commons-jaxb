@@ -3,8 +3,6 @@ package no.imr.nmdapi.common.jaxb.converters;
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.XMLConstants;
@@ -138,7 +136,7 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
                 unmarshaller.setSchema(schema);
             }
             unmarshaller.setEventHandler(new ValidationEventHandler() {
-
+                @Override
                 public boolean handleEvent(ValidationEvent event) {
                     return false;
                 };
