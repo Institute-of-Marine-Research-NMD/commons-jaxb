@@ -159,6 +159,7 @@ public class JAXBHttpMessageConverter extends AbstractHttpMessageConverter<Objec
             Marshaller marshaller = jaxbContext.createMarshaller();
             marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", nsMapper);
             marshaller.setProperty(Marshaller.JAXB_ENCODING, ENCODING);
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(o, outputMessage.getBody());
         } catch (JAXBException e) {
             LOGGER.error("Could not complete marshalling", e);
